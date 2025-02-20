@@ -1,0 +1,21 @@
+[project]
+name = "S3 Faker"
+version = "0.1.0"
+description = "Generate fake data based on json config and save locally and also in aws s3 bucket"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "faker>=36.1.1",
+    "fastparquet>=2024.11.0",
+    "fsspec>=2025.2.0",
+    "pandas>=2.2.3",
+    "pyarrow>=19.0.0",
+    "s3fs>=2025.2.0",
+]
+
+[dependency-groups]
+dev = [
+    "awscli-local[ver1]>=0.22.0",
+    "awscli>=1.37.3",
+    "localstack>=4.1.1",
+]

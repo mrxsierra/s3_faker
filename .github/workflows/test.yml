@@ -1,0 +1,58 @@
+name: Test app.py with LocalStack
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write # Needed for Docker login if you use it
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Docker
+        uses: docker/setup-qemu-action@v2
+
+      - name: Install Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Start LocalStack
+        env:
+          LOCALSTACK_AUTH_TOKEN: ${{ secrets.LOCALSTACK_AUTH_TOKEN }}
+        run: |
+          localstack auth set-token "$LOCALSTACK_AUTH_TOKEN"
+          localstack start
+
+      - name: Create S3 bucket
+        run: |
+          awslocal s3 mb s3://mamoke-bucket
+
+      - name: Run app.py
+        run: |
+          python app.py
+
+      - name: Stop LocalStack
+        run: localstack stop
+
+      - name: Cleanup (Optional - Remove output directory)
+        run: rm -rf output
+
+
