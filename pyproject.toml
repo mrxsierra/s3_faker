@@ -1,5 +1,5 @@
 [project]
-name = "S3 Faker"
+name = "s3_faker"
 version = "0.1.0"
 description = "Generate fake data based on json config and save locally and also in aws s3 bucket"
 readme = "README.md"

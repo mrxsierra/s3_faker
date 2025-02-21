@@ -1,0 +1,56 @@
+name: Test Scripting Workflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test_scripting:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v2
+
+      - name: Set up Docker
+        run: |
+          if ! docker info > /dev/null 2>&1; then
+            echo "Docker is not running. Please start Docker."
+            exit 1
+          fi
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Start LocalStack
+        env:
+          LOCALSTACK_AUTH_TOKEN: ${{ secrets.LOCALSTACK_AUTH_TOKEN }}
+        run: |
+          docker run -d -p 4566:4566 -e LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN} localstack/localstack
+
+      - name: Set environment variables
+        run: |
+          echo "AWS_ACCESS_KEY_ID=test" >> $GITHUB_ENV
+          echo "AWS_SECRET_ACCESS_KEY=test" >> $GITHUB_ENV
+          echo "AWS_ENDPOINT_URL=http://localhost:4566" >> $GITHUB_ENV
+
+      - name: Create S3 bucket
+        run: |
+          awslocal s3 mb s3://mamoke-bucket
+          awslocal s3 ls
+
+      - name: Run app.py
+        run: |
+          python app.py
+
+      - name: Stop LocalStack
+        run: |
+          docker stop $(docker ps -q --filter "ancestor=localstack/localstack")

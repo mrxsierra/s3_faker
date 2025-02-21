@@ -10,7 +10,7 @@ wheels/
 .venv
 
 # environment variables
-.env
+# .env # not so secret of anysort
 
 # output folder
 output/
