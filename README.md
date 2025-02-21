@@ -221,21 +221,21 @@ Usage:
 ./test_scripting.ps1
 ```
 
-### Contributing
+## Contributing
 
 Contributions are welcome! Please open an issue or submit a pull request for any improvements or bug fixes.
 
-### License
+## License
 
 This project is licensed under the MIT License. See the LICENSE file for details.
 
-### Contact
+## Contact
 
 For any inquiries, please contact [sunydiji@gmail.com](mailto:sunydiji@gmail.com).
 
 ---
 
-### Images
+## Images
 
 #### LocalStack Resource
 
